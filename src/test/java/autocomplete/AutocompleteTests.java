@@ -62,6 +62,24 @@ public abstract class AutocompleteTests {
     }
 
     @Test
+    void compareSimple() {
+        List<CharSequence> terms = List.of(
+                "alpha", "delta", "do", "cats", "dodgy", "pilot", "dog"
+        );
+        CharSequence prefix = "do";
+        List<CharSequence> expected = List.of("do", "dodgy", "dog");
+
+        Autocomplete testing = createAutocomplete();
+        testing.addAll(terms);
+        //may be an error here since the actual is being assigned 0
+        List<CharSequence> actual = testing.allMatches(prefix);
+
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+        assertTrue(actual.containsAll(expected));
+    }
+
+    @Test
     void compareRandomPrefixes() {
         Random random = new Random(373);
         double samplingProportion = 0.0001;
@@ -91,6 +109,8 @@ public abstract class AutocompleteTests {
      *
      * @param prefix the prefix string to pass to {@code allMatches}
      */
+    // This test is checking the expected output using TreeSetAutocomplete to the other implementations
+    // of Autocomplete.
     void assertAllMatches(String prefix) {
         List<CharSequence> expected = reference.allMatches(prefix);
         List<CharSequence> actual = testing.allMatches(prefix);
