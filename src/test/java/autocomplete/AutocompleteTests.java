@@ -71,9 +71,7 @@ public abstract class AutocompleteTests {
 
         Autocomplete testing = createAutocomplete();
         testing.addAll(terms);
-        //may be an error here since the actual is being assigned 0
         List<CharSequence> actual = testing.allMatches(prefix);
-
         assertEquals(expected.size(), actual.size());
         assertTrue(expected.containsAll(actual));
         assertTrue(actual.containsAll(expected));
