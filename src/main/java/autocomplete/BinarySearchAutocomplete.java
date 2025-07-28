@@ -40,7 +40,7 @@ public class BinarySearchAutocomplete implements Autocomplete {
         }
 
         // Assigns the index of the search key if found to indexOfKey,
-        // which if found, its value is >= 0, otherwise its < 0.
+        // which, if found, its value is >= 0, otherwise its < 0.
         int indexOfKey = Collections.binarySearch(elements, prefix, CharSequence::compare);
         CharSequence term;
 
@@ -50,13 +50,10 @@ public class BinarySearchAutocomplete implements Autocomplete {
             int start = indexOfKey;
             start = -(start + 1);
             indexOfKey = start;
-            //}
         }
 
         // If the returned indexOfKey is greater or equal to 0, match is found so add match
         // and keep iterating until the end is found
-
-
         while (indexOfKey < elements.size()) {
             term = elements.get(indexOfKey);
             if (Autocomplete.isPrefixOf(prefix, term)) {
@@ -65,7 +62,6 @@ public class BinarySearchAutocomplete implements Autocomplete {
 
             // If prefix is lexigraphically greater than term, then break,
             // If its less then add the term and increment indexOfKey.
-
             indexOfKey++;
         }
 
