@@ -41,20 +41,24 @@ public class UnsortedArrayMinPQ<E> implements MinPQ<E> {
         if (contains(element)) {
             throw new IllegalArgumentException("Already contains " + element);
         }
-        // TODO: Replace with your code
-        throw new UnsupportedOperationException("Not implemented yet");
+        PriorityNode<E> priorityNode = new PriorityNode<>(element, priority);
+        elements.add(priorityNode);
     }
 
     @Override
     public boolean contains(E element) {
-        // TODO: Replace with your code
-        throw new UnsupportedOperationException("Not implemented yet");
+        return elements.contains(new PriorityNode<>(element, 0));
     }
 
     @Override
     public double getPriority(E element) {
-        // TODO: Replace with your code
-        throw new UnsupportedOperationException("Not implemented yet");
+        if (!contains(element)) {
+            throw new NoSuchElementException("PQ does not contain " + element);
+        }
+        int index = elements.indexOf(new PriorityNode<E>(element, 0));
+
+        PriorityNode<E> elem = elements.get(index);
+        return elem.getPriority();
     }
 
     @Override
@@ -62,8 +66,17 @@ public class UnsortedArrayMinPQ<E> implements MinPQ<E> {
         if (isEmpty()) {
             throw new NoSuchElementException("PQ is empty");
         }
-        // TODO: Replace with your code
-        throw new UnsupportedOperationException("Not implemented yet");
+        // Find the min element
+        int index = 0;
+        for (PriorityNode<E> node : elements) {
+            double priority = node.getPriority();
+
+            if (priority < elements.get(index).getPriority()) {
+                index = elements.indexOf(node);
+            }
+        }
+        return elements.get(index).getElement();
+
     }
 
     @Override
@@ -71,22 +84,29 @@ public class UnsortedArrayMinPQ<E> implements MinPQ<E> {
         if (isEmpty()) {
             throw new NoSuchElementException("PQ is empty");
         }
-        // TODO: Replace with your code
-        throw new UnsupportedOperationException("Not implemented yet");
+        PriorityNode<E> min_node = elements.get(0);
+        for (PriorityNode<E> node : elements) {
+            double priority = node.getPriority();
+
+            if (priority < min_node.getPriority()) {
+                min_node = node;
+            }
+        }
+        return elements.remove(elements.indexOf(min_node)).getElement();
     }
 
     @Override
     public void changePriority(E element, double priority) {
         if (!contains(element)) {
             throw new NoSuchElementException("PQ does not contain " + element);
+        } else {
+            // if the element is not in the priority queue, then make a priority node
+            int index = elements.indexOf(new PriorityNode<>(element, 0));
+            PriorityNode<E> temp = elements.get(index);
+            temp.setPriority(priority);
         }
-        // TODO: Replace with your code
-        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
-    public int size() {
-        // TODO: Replace with your code
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+    public int size() { return elements.size(); }
 }
