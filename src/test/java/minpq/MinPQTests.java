@@ -25,6 +25,35 @@ public abstract class MinPQTests {
     public abstract <E> MinPQ<E> createMinPQ();
 
     @Test
+    void compareSimple() {
+        MinPQ<String> reference = new DoubleMapMinPQ<>();
+        // key: string " i" value: int i
+        for (int i = 1; i < 7; i++) {
+            reference.add("" + i, i);
+        }
+
+        MinPQ<String> testing = createMinPQ();
+        for (int i = 1; i < 7; i++) {
+            testing.add("" + i, i);
+        }
+
+        // CHECK: seems like the elements are not having their priority updated.
+        // Call methods to evaluate behavior.
+        reference.changePriority("3", 0.0);
+        reference.changePriority("1", 7.0);
+
+        testing.changePriority("3", 0.0);
+        testing.changePriority("1", 7.0);
+
+        // Assert that the different PQ's contain elements in equivalent order
+        // seems like the priority is changing but the min is not
+        while (!reference.isEmpty()) {
+            assertEquals(reference.removeMin(), testing.removeMin());
+        }
+        assertTrue(testing.isEmpty());
+    }
+
+    @Test
     public void wcagIndexAsPriority() throws FileNotFoundException {
         File inputFile = new File("data/wcag.tsv");
         MinPQ<String> reference = new DoubleMapMinPQ<>();
