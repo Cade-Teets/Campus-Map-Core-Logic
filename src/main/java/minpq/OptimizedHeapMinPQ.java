@@ -16,14 +16,14 @@ public class OptimizedHeapMinPQ<E> implements MinPQ<E> {
     /**
      * {@link Map} of each element to its associated index in the {@code elements} heap.
      */
-    private final Map<E, Integer> elementsToIndex;
+    //private final Map<E, Integer> elementsToIndex;
 
     /**
      * Constructs an empty instance.
      */
     public OptimizedHeapMinPQ() {
         elements = new ArrayList<>();
-        elementsToIndex = new HashMap<>();
+        //elementsToIndex = new HashMap<>();
         elements.add(null);
     }
 
@@ -33,8 +33,10 @@ public class OptimizedHeapMinPQ<E> implements MinPQ<E> {
      * @param elementsAndPriorities each element and its corresponding priority.
      */
     public OptimizedHeapMinPQ(Map<E, Double> elementsAndPriorities) {
-        // TODO: Replace with your code
-        throw new UnsupportedOperationException("Not implemented yet");
+        elements = new ArrayList<>();
+        for (Map.Entry<E, Double> entry : elementsAndPriorities.entrySet()) {
+            add(entry.getKey(), entry.getValue());
+        }
     }
 
     @Override
@@ -42,20 +44,20 @@ public class OptimizedHeapMinPQ<E> implements MinPQ<E> {
         if (contains(element)) {
             throw new IllegalArgumentException("Already contains " + element);
         }
-        // TODO: Replace with your code
-        throw new UnsupportedOperationException("Not implemented yet");
+        PriorityNode<E> temp = new PriorityNode<>(element, priority);
+        elements.add(temp);
     }
 
     @Override
     public boolean contains(E element) {
-        // TODO: Replace with your code
-        throw new UnsupportedOperationException("Not implemented yet");
+        return elements.contains(new PriorityNode<>(element, 0));
     }
 
     @Override
     public double getPriority(E element) {
-        // TODO: Replace with your code
-        throw new UnsupportedOperationException("Not implemented yet");
+        int index = elements.indexOf(new PriorityNode<>(element, 0));
+        PriorityNode<E> elem = elements.get(index);
+        return elem.getPriority();
     }
 
     @Override
@@ -63,8 +65,16 @@ public class OptimizedHeapMinPQ<E> implements MinPQ<E> {
         if (isEmpty()) {
             throw new NoSuchElementException("PQ is empty");
         }
-        // TODO: Replace with your code
-        throw new UnsupportedOperationException("Not implemented yet");
+        // First index is 1, as 0 reserved for null
+        int index = 1;
+        double min_priority = elements.get(1).getPriority();
+        for (int i = 2; i < elements.size(); i++) {
+            if (elements.get(i).getPriority() < min_priority) {
+                min_priority = elements.get(i).getPriority();
+                index = i;
+            }
+        }
+        return elements.get(index).getElement();
     }
 
     @Override
@@ -72,8 +82,16 @@ public class OptimizedHeapMinPQ<E> implements MinPQ<E> {
         if (isEmpty()) {
             throw new NoSuchElementException("PQ is empty");
         }
-        // TODO: Replace with your code
-        throw new UnsupportedOperationException("Not implemented yet");
+        // First index is 1
+        int index = 1;
+        double min_priority = elements.get(1).getPriority();
+        for (int i = 2; i < elements.size(); i++) {
+            if (elements.get(i).getPriority() < min_priority) {
+                min_priority = elements.get(i).getPriority();
+                index = i;
+            }
+        }
+        return elements.remove(index).getElement();
     }
 
     @Override
@@ -81,13 +99,14 @@ public class OptimizedHeapMinPQ<E> implements MinPQ<E> {
         if (!contains(element)) {
             throw new NoSuchElementException("PQ does not contain " + element);
         }
-        // TODO: Replace with your code
-        throw new UnsupportedOperationException("Not implemented yet");
+        // if the element is not in the priority queue, then make a priority node
+        int index = elements.indexOf(new PriorityNode<>(element, 0));
+        PriorityNode<E> temp = elements.get(index);
+        temp.setPriority(priority);
     }
 
     @Override
     public int size() {
-        // TODO: Replace with your code
-        throw new UnsupportedOperationException("Not implemented yet");
+        return elements.size() - 1;
     }
 }
