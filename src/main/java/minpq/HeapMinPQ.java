@@ -41,7 +41,7 @@ public class HeapMinPQ<E> implements MinPQ<E> {
         if (contains(element)) {
             throw new IllegalArgumentException("Already contains " + element);
         }
-        pq.add(new PriorityNode<E>(element, priority));
+        pq.add(new PriorityNode<>(element, priority));
     }
 
     @Override
