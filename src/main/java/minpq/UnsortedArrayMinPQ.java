@@ -55,7 +55,7 @@ public class UnsortedArrayMinPQ<E> implements MinPQ<E> {
         if (!contains(element)) {
             throw new NoSuchElementException("PQ does not contain " + element);
         }
-        int index = elements.indexOf(new PriorityNode<E>(element, 0));
+        int index = elements.indexOf(new PriorityNode<>(element, 0));
 
         PriorityNode<E> elem = elements.get(index);
         return elem.getPriority();
