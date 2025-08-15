@@ -13,7 +13,7 @@ public class OptimizedHeapMinPQ<E> implements MinPQ<E> {
      * {@link List} of {@link PriorityNode} objects representing the heap of element-priority pairs.
      */
     private final List<PriorityNode<E>> elements;
-    /**
+    /*
      * {@link Map} of each element to its associated index in the {@code elements} heap.
      */
     //private final Map<E, Integer> elementsToIndex;
