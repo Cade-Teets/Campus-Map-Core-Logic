@@ -84,15 +84,9 @@ public class UnsortedArrayMinPQ<E> implements MinPQ<E> {
         if (isEmpty()) {
             throw new NoSuchElementException("PQ is empty");
         }
-        PriorityNode<E> min_node = elements.get(0);
-        for (PriorityNode<E> node : elements) {
-            double priority = node.getPriority();
-
-            if (priority < min_node.getPriority()) {
-                min_node = node;
-            }
-        }
-        return elements.remove(elements.indexOf(min_node)).getElement();
+        PriorityNode<E> temp = new PriorityNode<>(peekMin(), 0);
+        elements.remove(temp);
+        return temp.getElement();
     }
 
     @Override
