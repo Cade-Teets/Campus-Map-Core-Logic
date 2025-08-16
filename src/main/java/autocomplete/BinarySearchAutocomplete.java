@@ -53,18 +53,15 @@ public class BinarySearchAutocomplete implements Autocomplete {
         }
 
         // If the returned indexOfKey is greater or equal to 0, match is found so add match
-        // and keep iterating until the end is found
-        while (indexOfKey < elements.size()) {
-            term = elements.get(indexOfKey);
+        // since its sorted, if it's not finding a prefix match anymore then break.
+        for (int i = indexOfKey; i < elements.size(); i++) {
+            term = elements.get(i);
             if (Autocomplete.isPrefixOf(prefix, term)) {
                 result.add(term);
+            } else {
+                break;
             }
-
-            // If prefix is lexigraphically greater than term, then break,
-            // If its less then add the term and increment indexOfKey.
-            indexOfKey++;
         }
-
     return result;
     }
 }
