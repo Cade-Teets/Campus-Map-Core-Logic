@@ -16,14 +16,14 @@ public class OptimizedHeapMinPQ<E> implements MinPQ<E> {
     /*
      * {@link Map} of each element to its associated index in the {@code elements} heap.
      */
-    //private final Map<E, Integer> elementsToIndex;
+    private final Map<E, Integer> elementsToIndex;
 
     /**
      * Constructs an empty instance.
      */
     public OptimizedHeapMinPQ() {
         elements = new ArrayList<>();
-        //elementsToIndex = new HashMap<>();
+        elementsToIndex = new HashMap<>();
         elements.add(null);
     }
 
@@ -32,12 +32,16 @@ public class OptimizedHeapMinPQ<E> implements MinPQ<E> {
      *
      * @param elementsAndPriorities each element and its corresponding priority.
      */
-    public OptimizedHeapMinPQ(Map<E, Double> elementsAndPriorities) {
-        elements = new ArrayList<>();
-        for (Map.Entry<E, Double> entry : elementsAndPriorities.entrySet()) {
-            add(entry.getKey(), entry.getValue());
-        }
-    }
+//    public OptimizedHeapMinPQ(Map<E, Double> elementsAndPriorities) {
+//        elements = new ArrayList<>();
+//        elementsToIndex = new HashMap<>();
+//        for (Map.Entry<E, Double> entry : elementsAndPriorities.entrySet()) {
+//            // want to get the entry's key/value pair, and update the hashmap so it stores
+//            // the index of a given element
+//            PriorityNode<E> temp = new PriorityNode<>(entry.getKey(), entry.getValue());
+//            add(entry.getKey(), entry.getValue());
+//        }
+//    }
 
     @Override
     public void add(E element, double priority) {
@@ -46,18 +50,19 @@ public class OptimizedHeapMinPQ<E> implements MinPQ<E> {
         }
         PriorityNode<E> temp = new PriorityNode<>(element, priority);
         elements.add(temp);
+        elementsToIndex.put(element, size());
+        //Restore the min heap invariant:
+        swim(size());
     }
 
     @Override
     public boolean contains(E element) {
-        return elements.contains(new PriorityNode<>(element, 0));
+        return elementsToIndex.containsKey(element);
     }
 
     @Override
     public double getPriority(E element) {
-        int index = elements.indexOf(new PriorityNode<>(element, 0));
-        PriorityNode<E> elem = elements.get(index);
-        return elem.getPriority();
+        return elements.get(elementsToIndex.get(element)).getPriority();
     }
 
     @Override
@@ -66,15 +71,7 @@ public class OptimizedHeapMinPQ<E> implements MinPQ<E> {
             throw new NoSuchElementException("PQ is empty");
         }
         // First index is 1, as 0 reserved for null
-        int index = 1;
-        double min_priority = elements.get(1).getPriority();
-        for (int i = 2; i < elements.size(); i++) {
-            if (elements.get(i).getPriority() < min_priority) {
-                min_priority = elements.get(i).getPriority();
-                index = i;
-            }
-        }
-        return elements.get(index).getElement();
+        return elements.get(1).getElement();
     }
 
     @Override
@@ -83,15 +80,15 @@ public class OptimizedHeapMinPQ<E> implements MinPQ<E> {
             throw new NoSuchElementException("PQ is empty");
         }
         // First index is 1
-        int index = 1;
-        double min_priority = elements.get(1).getPriority();
-        for (int i = 2; i < elements.size(); i++) {
-            if (elements.get(i).getPriority() < min_priority) {
-                min_priority = elements.get(i).getPriority();
-                index = i;
-            }
-        }
-        return elements.remove(index).getElement();
+
+        E element = peekMin();
+        exchangeNode(1, size());
+
+        elements.remove(size());
+        elementsToIndex.remove(element);
+
+        sink(1);
+        return element;
     }
 
     @Override
@@ -99,14 +96,64 @@ public class OptimizedHeapMinPQ<E> implements MinPQ<E> {
         if (!contains(element)) {
             throw new NoSuchElementException("PQ does not contain " + element);
         }
-        // if the element is not in the priority queue, then make a priority node
-        int index = elements.indexOf(new PriorityNode<>(element, 0));
-        PriorityNode<E> temp = elements.get(index);
-        temp.setPriority(priority);
+        int index = elementsToIndex.get(element);
+        elements.get(index).setPriority(priority);
+
+        sink(index);
+        swim(index);
     }
 
     @Override
     public int size() {
         return elements.size() - 1;
     }
+    private void swim(int index) {
+        // Index goes from n -> size()
+        // Swim until its the min priority element
+        while (inBounds(index / 2) && elements.get(index).getPriority() < elements.get(index/2).getPriority()) {
+            exchangeNode(index, index/2);
+            index = index / 2;
+        }
+    }
+    private void sink(int index) {
+        // Index goes from n -> size()
+
+        int min_child = isMin(index*2, index*2 + 1);
+
+        while (inBounds(min_child) && elements.get(index).getPriority() > elements.get(min_child).getPriority()) {
+            exchangeNode(index, min_child);
+            index = min_child;
+            min_child = isMin(index*2, index*2 + 1);
+        }
+    }
+    private void exchangeNode(int i, int j) {
+        // store element (PriorityNode) in temp
+        // element at i assigned to be element at j
+        // element at j assigned be temp
+        PriorityNode<E> temp1 = elements.get(i);
+        PriorityNode<E> temp2 = elements.get(j);
+
+        elements.set(i, temp2);
+        elements.set(j, temp1);
+
+        elementsToIndex.put(temp1.getElement(), j);
+        elementsToIndex.put(temp2.getElement(), i);
+    }
+    private boolean inBounds(int n) {
+        return n >= 1 && n <= size();
+    }
+    private int isMin(int i, int j) {
+        if (inBounds(i) && inBounds(j)) {
+            if (elements.get(i).getPriority() < elements.get(j).getPriority()) {
+                return i;
+            } else {
+                return j;
+            }
+        } else if (inBounds(i)) {
+            return i;
+        }
+        return 0;
+    }
 }
+
+
