@@ -39,7 +39,7 @@ public class TernarySearchTreeAutocomplete implements Autocomplete {
     public List<CharSequence> allMatches(CharSequence prefix) {
         List<CharSequence> result = new ArrayList<>();
 
-        // Base Case: if the prefix is emmpty/null, just return the empty list
+        // Base Case: if the prefix is empty/null, just return the empty list
         if (prefix == null || prefix.isEmpty())  {
             return result;
         }
@@ -50,7 +50,7 @@ public class TernarySearchTreeAutocomplete implements Autocomplete {
         if (start == null) {
             return result;
         }
-        // If the starting node is a word contianing the prefix, then add it to the results
+        // If the starting node is a word containing the prefix, then add it to the results
         if (start.isTerm) {
             result.add(prefix);
         }
@@ -105,8 +105,6 @@ public class TernarySearchTreeAutocomplete implements Autocomplete {
         }
         if (x == null) {
             x = new Node(letter);
-            //x.mid = y;
-            //putTerms(y, terms, d);
         }
 
         // Logic to compare the TST node char to the letter being added
