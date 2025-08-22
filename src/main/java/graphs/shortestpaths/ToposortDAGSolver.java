@@ -3,6 +3,7 @@ package graphs.shortestpaths;
 import graphs.Edge;
 import graphs.Graph;
 
+
 import java.util.*;
 
 /**
@@ -24,10 +25,26 @@ public class ToposortDAGSolver<V> implements ShortestPathSolver<V> {
     public ToposortDAGSolver(Graph<V> graph, V start) {
         edgeTo = new HashMap<>();
         distTo = new HashMap<>();
-        // TODO: Replace with your code
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+        Set<V> visited = new HashSet<V>();
+        List<V> result = new ArrayList<>();
 
+        // Add the start distance
+        distTo.put(start, 0.0);
+
+        // Store post-order traversal in result and reverse it
+        dfsPostOrder(graph, start, visited, result);
+        Collections.reverse(result);
+
+        // Relax the edges of reversed post-order nodes
+        for (V vertex : result) {
+            if (distTo.containsKey(vertex)) {
+                for (Edge<V> edge : graph.neighbors(vertex)) {
+                    // make helper function to compare edge weights and swap
+                    relax(edge);
+                }
+            }
+        }
+    }
     /**
      * Recursively adds nodes from the graph to the result in DFS postorder from the start vertex.
      *
@@ -37,8 +54,18 @@ public class ToposortDAGSolver<V> implements ShortestPathSolver<V> {
      * @param result  the destination for adding nodes.
      */
     private void dfsPostOrder(Graph<V> graph, V start, Set<V> visited, List<V> result) {
-        // TODO: Replace with your code
-        throw new UnsupportedOperationException("Not implemented yet");
+        // Add starting vertex to visited set to avoid endless loop
+        visited.add(start);
+
+        // For each edge that leaves the start node
+        for (Edge<V> e : graph.neighbors(start)) {
+            // Get the vertex connected to e and recurse if it has not been visited
+            V to = e.to;
+            if (!visited.contains(to)) {
+                dfsPostOrder(graph, to, visited, result);
+            }
+            result.add(to);
+        }
     }
 
     @Override
@@ -52,5 +79,16 @@ public class ToposortDAGSolver<V> implements ShortestPathSolver<V> {
         }
         Collections.reverse(path);
         return path;
+    }
+    private void relax(Edge<V> edge) {
+        V from = edge.from;;
+        V to = edge.to;
+
+        double oldDist = distTo.getOrDefault(to, Double.POSITIVE_INFINITY);
+        double newDist = distTo.get(from) + edge.weight;
+        if (newDist < oldDist) {
+            edgeTo.put(to, edge);
+            distTo.put(to, newDist);
+        }
     }
 }
