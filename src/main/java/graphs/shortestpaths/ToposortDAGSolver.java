@@ -25,7 +25,7 @@ public class ToposortDAGSolver<V> implements ShortestPathSolver<V> {
     public ToposortDAGSolver(Graph<V> graph, V start) {
         edgeTo = new HashMap<>();
         distTo = new HashMap<>();
-        Set<V> visited = new HashSet<V>();
+        Set<V> visited = new HashSet<>();
         List<V> result = new ArrayList<>();
 
         // Add the start distance
@@ -81,7 +81,7 @@ public class ToposortDAGSolver<V> implements ShortestPathSolver<V> {
         return path;
     }
     private void relax(Edge<V> edge) {
-        V from = edge.from;;
+        V from = edge.from;
         V to = edge.to;
 
         double oldDist = distTo.getOrDefault(to, Double.POSITIVE_INFINITY);
