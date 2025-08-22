@@ -69,8 +69,12 @@ public class GenerativeSeamFinder implements SeamFinder {
         private final Node source = new Node() {
             @Override
             public List<Edge<Node>> neighbors(Picture picture, EnergyFunction f) {
-                // TODO: Replace with your code
-                throw new UnsupportedOperationException("Not implemented yet");
+               List<Edge<Node>> result = new ArrayList<>(picture.height());
+               for (int j = 0; j < picture.height(); j+= 1) {
+                   Pixel to = new Pixel(0, j);
+                   result.add(new Edge<>(this, to, f.apply(picture, 0, j)));
+               }
+               return result;
             }
         };
         /**
@@ -79,8 +83,7 @@ public class GenerativeSeamFinder implements SeamFinder {
         private final Node sink = new Node() {
             @Override
             public List<Edge<Node>> neighbors(Picture picture, EnergyFunction f) {
-                // TODO: Replace with your code
-                throw new UnsupportedOperationException("Not implemented yet");
+                return List.of();
             }
         };
 
@@ -126,8 +129,23 @@ public class GenerativeSeamFinder implements SeamFinder {
 
             @Override
             public List<Edge<Node>> neighbors(Picture picture, EnergyFunction f) {
-                // TODO: Replace with your code
-                throw new UnsupportedOperationException("Not implemented yet");
+                List<Edge<Node>> adjacent = new ArrayList<>();
+
+                // Base Case: If pixel is in last column in picture
+                // add the last
+                if (x == picture.width() - 1) {
+                    adjacent.add(new Edge<>(this, sink, 0));
+                    return adjacent;
+                }
+                // Adding neighbor pixels to the list
+                for (int z = y - 1; z <= y + 1; z+=1) {
+                    if (z >= 0 && z < picture.height()) {
+                        Pixel neighbor = new Pixel(x + 1, z);
+                        adjacent.add(new Edge<>(this, neighbor, f.apply(picture,x + 1, z)));
+                    }
+                }
+                // return a list of neighbors for a given pixel
+                return adjacent;
             }
 
             @Override
