@@ -34,6 +34,10 @@ public class GenerativeSeamFinder implements SeamFinder {
 
     @Override
     public List<Integer> findHorizontal(Picture picture, EnergyFunction f) {
+//        if (picture.height() == 0 || picture.width() == 0) {
+//            return new ArrayList<>();
+//        }
+
         PixelGraph graph = new PixelGraph(picture, f);
         List<Node> seam = sps.run(graph, graph.source).solution(graph.sink);
         seam = seam.subList(1, seam.size() - 1); // Skip the source and sink nodes
@@ -115,7 +119,6 @@ public class GenerativeSeamFinder implements SeamFinder {
         public class Pixel implements Node {
             private final int x;
             private final int y;
-
             /**
              * Constructs a pixel representing the (<i>x</i>, <i>y</i>) indices in the picture.
              *
@@ -138,10 +141,10 @@ public class GenerativeSeamFinder implements SeamFinder {
                     return adjacent;
                 }
                 // Adding neighbor pixels to the list
-                for (int z = y - 1; z <= y + 1; z+=1) {
+                for (int z = y - 1; z <= y + 1; z += 1) {
                     if (z >= 0 && z < picture.height()) {
                         Pixel neighbor = new Pixel(x + 1, z);
-                        adjacent.add(new Edge<>(this, neighbor, f.apply(picture,x + 1, z)));
+                        adjacent.add(new Edge<>(this, neighbor, f.apply(picture, x + 1, z)));
                     }
                 }
                 // return a list of neighbors for a given pixel

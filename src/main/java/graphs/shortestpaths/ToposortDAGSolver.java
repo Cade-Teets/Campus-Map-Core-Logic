@@ -58,14 +58,14 @@ public class ToposortDAGSolver<V> implements ShortestPathSolver<V> {
         visited.add(start);
 
         // For each edge that leaves the start node
-        for (Edge<V> e : graph.neighbors(start)) {
+        for (Edge<V> edge : graph.neighbors(start)) {
             // Get the vertex connected to e and recurse if it has not been visited
-            V to = e.to;
+            V to = edge.to;
             if (!visited.contains(to)) {
                 dfsPostOrder(graph, to, visited, result);
             }
-            result.add(to);
         }
+        result.add(start);
     }
 
     @Override
